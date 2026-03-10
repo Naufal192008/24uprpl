@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Email JS</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <h1>TEST EMAIL VIA JAVASCRIPT</h1>
+    
+    <script>
+        emailjs.init('zO6XyHCxMhxySvvaU');
+        
+        emailjs.send('service_3anwd2k', 'template_wb3cmkl', {
+            to_email: 'nmurtadho1905@gmail.com',
+            to_name: 'Test User',
+            username: 'testuser',
+            password: 'Test123!@#',
+            login_url: window.location.origin + '/login.php',
+            from_name: 'Admin Pusat Unit Produksi RPL',
+            reply_to: 'nmurtadho1905@gmail.com'
+        }).then(function(response) {
+            document.body.innerHTML += '<h2 style="color:green">✅ EMAIL TERKIRIM!</h2>';
+            console.log('Success:', response);
+        }, function(error) {
+            document.body.innerHTML += '<h2 style="color:red">❌ EMAIL GAGAL!</h2>';
+            console.log('Error:', error);
+        });
+    </script>
+</body>
+</html>

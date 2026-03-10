@@ -1,0 +1,89 @@
+# ==================== KONFIGURASI HTACCESS ====================
+# File: .htaccess (letakkan di ROOT folder: C:/xampp/htdocs/uprpl-php/.htaccess)
+
+# Aktifkan rewrite engine
+RewriteEngine On
+
+# Set base folder - SESUAIKAN DENGAN FOLDER ANDA
+# Jika akses via: http://localhost/uprpl-php/
+RewriteBase /uprpl-php/
+
+# ==================== CEK REDIRECT LOOP ====================
+# Jangan lakukan apapun untuk file dan folder yang sudah ada
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ==================== REDIRECT WWW KE NON-WWW ====================
+# (Opsional - komentari jika tidak perlu)
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+
+# ==================== REDIRECT HTTP KE HTTPS ====================
+# (Opsional - aktifkan jika pakai SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/uprpl-php/$1 [R=301,L]
+
+# ==================== PROTEKSI FILE SENSITIF ====================
+<FilesMatch "^(config\.php|database\.php|functions\.php|.*\.sql|.*\.log|.*\.ini)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Proteksi folder includes dan config
+<IfModule mod_rewrite.c>
+    RewriteRule ^includes/ - [F,L]
+    RewriteRule ^config/ - [F,L]
+    RewriteRule ^sql/ - [F,L]
+    RewriteRule ^vendor/ - [F,L]
+</IfModule>
+
+# ==================== DIREKTORI INDEX ====================
+DirectoryIndex index.php
+
+# Cegah listing direktori
+Options -Indexes
+
+# ==================== ERROR PAGES ====================
+# Pastikan file-file ini ADA di folder yang benar
+ErrorDocument 403 /uprpl-php/403.php
+ErrorDocument 404 /uprpl-php/404.php
+ErrorDocument 500 /uprpl-php/500.php
+
+# ==================== KOMPRESI GZIP ====================
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml application/rss+xml
+    AddOutputFilterByType DEFLATE font/ttf font/otf image/svg+xml
+</IfModule>
+
+# ==================== CACHE STATIC FILES ====================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+</IfModule>
+
+# ==================== SECURITY HEADERS ====================
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# ==================== PHP VALUE ====================
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>

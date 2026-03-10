@@ -1,0 +1,16 @@
+# ==================== PROTEKSI FOLDER UPLOADS ====================
+
+# Blok akses langsung ke file PHP
+<Files *.php>
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Izinkan akses ke file gambar dan PDF
+<FilesMatch "\.(jpg|jpeg|png|gif|pdf)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Disable indexing
+Options -Indexes

@@ -1,0 +1,13 @@
+﻿# Environment
+.env
+*.local
+config/midtrans.php
+config/midtrans.php.backup
+
+# Dependencies
+/vendor/
+/node_modules/
+
+# IDE
+.vscode/
+.idea/
