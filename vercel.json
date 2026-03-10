@@ -1,6 +1,4 @@
-# Buat file vercel.json untuk konfigurasi
-@"
-{
+﻿{
   "functions": {
     "api/*.php": {
       "runtime": "vercel-php@0.6.0"
@@ -13,7 +11,3 @@
     }
   ]
 }
-"@ | Out-File -FilePath vercel.json -Encoding utf8
-
-# Tambahkan ke git
-git add vercel.json
