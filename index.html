@@ -1,10 +1,3 @@
-<?php
-// ==================== HALAMAN UTAMA ====================
-// File: index.php - VERSI FULL SCREEN PER SECTION
-
-require_once 'config/database.php';
-require_once 'includes/functions.php';
-?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -1548,7 +1541,10 @@ require_once 'includes/functions.php';
     <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <img src="ChatGPT Image 19 Feb 2026, 22.39.25.png" alt="Logo RPL" class="logo-img">
+            <!-- Fallback jika gambar tidak ditemukan -->
+            <div class="logo-img" style="width: 60px; height: 60px; background: var(--gradient-1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white;">
+                <i class="fas fa-print" style="font-size: 2rem;"></i>
+            </div>
             <div class="logo-text">
                 <h1>UP RPL</h1>
                 <p>Layanan Printing & Fashion</p>
@@ -1909,7 +1905,7 @@ require_once 'includes/functions.php';
                                 </div>
                                 <div class="contact-details">
                                     <h4>WhatsApp</h4>
-                                    <p><?php echo defined('ADMIN_PHONE') ? ADMIN_PHONE : '+62 812-3456-7890'; ?></p>
+                                    <p>+62 812-3456-7890</p>
                                     <p style="font-size: 0.9rem; color: var(--gray);">Fast response 24/7</p>
                                 </div>
                             </div>
@@ -1920,7 +1916,7 @@ require_once 'includes/functions.php';
                                 </div>
                                 <div class="contact-details">
                                     <h4>Email</h4>
-                                    <p><?php echo defined('ADMIN_EMAIL') ? ADMIN_EMAIL : 'uprpl@smkn24jakarta.sch.id'; ?></p>
+                                    <p>uprpl@smkn24jakarta.sch.id</p>
                                 </div>
                             </div>
                             
@@ -1967,9 +1963,9 @@ require_once 'includes/functions.php';
                     <h2 class="section-title">LOGIN</h2>
                     <div class="section-divider"></div>
                     <p style="margin-bottom: 30px;">Silakan pilih jenis login:</p>
-                    <div style="display: flex; gap: 20px; justify-content: center;">
-                        <a href="login.php" class="btn" style="padding: 15px 40px;">Admin UP</a>
-                       <a href="login_pusat.php" class="btn" style="background: linear-gradient(135deg, rgb(239, 233, 236), rgb(229, 221, 228)00); padding: 15px 40px;">Admin Pusat</a>
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <a href="login.html" class="buy-btn" style="padding: 15px 40px; text-decoration: none;">Admin UP</a>
+                        <a href="login_pusat.html" class="buy-btn" style="background: linear-gradient(135deg, #f72585, #b5179e); padding: 15px 40px; text-decoration: none;">Admin Pusat</a>
                     </div>
                 </div>
             </div>
@@ -2009,8 +2005,8 @@ require_once 'includes/functions.php';
                     <div class="footer-links">
                         <h4>Akun</h4>
                         <ul>
-                            <li><a href="login.php"><i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> Admin UP</a></li>
-                            <li><a href="register.php"><i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> Daftar Admin UP</a></li>
+                            <li><a href="login.html"><i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> Admin UP</a></li>
+                            <li><a href="register.html"><i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i> Daftar Admin UP</a></li>
                         </ul>
                     </div>
                 </div>
@@ -2038,11 +2034,6 @@ require_once 'includes/functions.php';
     </div>
 
     <!-- SCRIPTS -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        window.jQuery || document.write('<script src="jquery-3.6.0.min.js"><\/script>');
-    </script>
-    
     <script>
         // ==================== VARIABEL GLOBAL ====================
         const loading = document.getElementById('loading');
@@ -2151,50 +2142,95 @@ require_once 'includes/functions.php';
                     <div class="form-error" style="text-align: center; padding: 40px;">
                         <i class="fas fa-exclamation-triangle fa-3x" style="color: var(--danger);"></i>
                         <p style="margin-top: 20px; font-size: 1.1rem;">⚠️ Waktu habis! Silakan coba lagi.</p>
-                        <button onclick="loadOrderForm('${layanan}', '${jenis}')" class="btn" style="margin-top: 20px;">
+                        <button onclick="loadOrderForm('${layanan}', '${jenis}')" class="buy-btn" style="margin-top: 20px; border: none;">
                             <i class="fas fa-sync-alt"></i> Coba Lagi
                         </button>
                     </div>
                 `;
             }, 8000);
             
-            $.ajax({
-                url: 'get_order_form.php',
-                method: 'POST',
-                data: { layanan: layanan, jenis: jenis },
-                timeout: 7000,
-                success: function(response) {
-                    clearTimeout(timeout);
-                    hideLoading();
-                    document.getElementById('orderModalBody').innerHTML = response;
-                    
-                    // Inisialisasi event listener setelah form dimuat
-                    initFormEvents();
-                },
-                error: function(xhr, status, error) {
-                    clearTimeout(timeout);
-                    hideLoading();
-                    
-                    let errorMessage = 'Gagal memuat form.';
-                    if (status === 'timeout') {
-                        errorMessage = '⚠️ Koneksi lambat. Silakan coba lagi.';
-                    } else {
-                        errorMessage = '❌ ' + (error || 'Terjadi kesalahan server');
-                    }
-                    
-                    document.getElementById('orderModalBody').innerHTML = `
-                        <div class="form-error" style="text-align: center; padding: 40px;">
-                            <i class="fas fa-exclamation-triangle fa-3x" style="color: var(--danger);"></i>
-                            <p style="margin-top: 20px; font-size: 1.1rem;">${errorMessage}</p>
-                            <button onclick="loadOrderForm('${layanan}', '${jenis}')" class="btn" style="margin-top: 20px;">
-                                <i class="fas fa-sync-alt"></i> Coba Lagi
-                            </button>
+            // Simulasi AJAX dengan form sederhana (karena ini HTML statis)
+            setTimeout(() => {
+                clearTimeout(timeout);
+                hideLoading();
+                
+                // Tampilkan form sederhana sebagai contoh
+                document.getElementById('orderModalBody').innerHTML = `
+                    <form id="orderForm" onsubmit="event.preventDefault(); submitOrder(this, '${layanan}');">
+                        <input type="hidden" name="layanan" value="${layanan}">
+                        <input type="hidden" name="jenis" value="${jenis}">
+                        
+                        <div class="service-info">
+                            <h3 style="margin-bottom: 10px;">Detail Pemesanan</h3>
+                            <p><strong>Layanan:</strong> ${layanan} ${jenis ? ' - ' + jenis : ''}</p>
                         </div>
-                    `;
-                    
-                    console.error('AJAX Error:', status, error);
-                }
-            });
+                        
+                        <div class="form-group">
+                            <label>Nama Lengkap *</label>
+                            <input type="text" class="form-control" name="nama" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Nomor WhatsApp *</label>
+                            <input type="tel" class="form-control" name="telepon" id="telepon" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Kelas (untuk siswa)</label>
+                            <input type="text" class="form-control" name="kelas">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Jumlah *</label>
+                            <input type="number" class="form-control" name="jumlah" id="jumlah" value="1" min="1" required oninput="updateTotal()">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Upload File Desain (PDF maks 5MB) atau Link Google Drive</label>
+                            
+                            <div class="upload-method-selector">
+                                <label class="method-option">
+                                    <input type="radio" name="upload_method" value="file" checked onchange="toggleUploadMethod()"> Upload File
+                                </label>
+                                <label class="method-option">
+                                    <input type="radio" name="upload_method" value="drive" onchange="toggleUploadMethod()"> Google Drive
+                                </label>
+                            </div>
+                            
+                            <div id="file-upload" class="upload-section">
+                                <div class="file-upload-area" onclick="document.getElementById('file_input').click()">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="file_name_display">Klik untuk pilih file PDF</span>
+                                </div>
+                                <input type="file" id="file_input" name="file_upload" accept=".pdf" style="display: none;" onchange="updateFileName(this)">
+                            </div>
+                            
+                            <div id="drive-upload" class="upload-section" style="display: none;">
+                                <input type="url" class="form-control" id="link_drive" name="link_drive" placeholder="https://drive.google.com/file/...">
+                                <small class="help-text">* Pastikan akses file diatur ke "Siapa saja dengan link"</small>
+                            </div>
+                        </div>
+                        
+                        <div class="total-section">
+                            <div class="total-label">TOTAL PEMBAYARAN</div>
+                            <div class="total-amount" id="totalDisplay">Rp 1.000</div>
+                        </div>
+                        
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-paper-plane"></i> KIRIM PESANAN
+                        </button>
+                    </form>
+                `;
+                
+                // Inisialisasi event listener setelah form dimuat
+                initFormEvents();
+                window.toggleUploadMethod();
+            }, 1000);
         }
         
         // ==================== FUNGSI UNTUK INISIALISASI EVENT FORM ====================
@@ -2314,9 +2350,8 @@ require_once 'includes/functions.php';
                         else if (jenis === 'sablon') harga = hargaSablon;
                         else harga = 50000 + hargaSablon;
                     } else {
-                        const hargaText = document.querySelector('.price-tag')?.textContent || '';
-                        const match = hargaText.match(/Rp\s+([0-9.]+)/);
-                        if (match) harga = parseInt(match[1].replace(/\./g, '')) || 0;
+                        // Harga default
+                        harga = 1000;
                     }
                     
                     const total = harga * jumlah;
@@ -2343,48 +2378,7 @@ require_once 'includes/functions.php';
             
             showLoading();
             
-            const form = document.getElementById('orderForm');
-            const formData = new FormData(form);
-            
-            // Cek metode upload
-            const uploadMethod = document.querySelector('input[name="upload_method"]:checked')?.value;
-            
-            if (uploadMethod === 'drive') {
-                // Validasi link Google Drive
-                const linkDrive = document.getElementById('link_drive')?.value;
-                if (!linkDrive) {
-                    alert('❌ Link Google Drive harus diisi!');
-                    hideLoading();
-                    return;
-                }
-                if (!linkDrive.startsWith('https://drive.google.com/') && !linkDrive.startsWith('https://docs.google.com/')) {
-                    alert('❌ Link Google Drive tidak valid! Gunakan link dari Google Drive.');
-                    hideLoading();
-                    return;
-                }
-            } else if (uploadMethod === 'file') {
-                // Validasi file upload
-                const fileInput = document.getElementById('file_input');
-                if (!fileInput.files || fileInput.files.length === 0) {
-                    alert('❌ Pilih file PDF terlebih dahulu!');
-                    hideLoading();
-                    return;
-                }
-                
-                if (fileInput.files[0].type !== 'application/pdf') {
-                    alert('❌ File harus berformat PDF!');
-                    hideLoading();
-                    return;
-                }
-                
-                if (fileInput.files[0].size > 5 * 1024 * 1024) {
-                    alert('❌ File terlalu besar! Maksimal 5MB.');
-                    hideLoading();
-                    return;
-                }
-            }
-            
-            // Validasi nomor telepon
+            // Validasi sederhana
             const telepon = document.getElementById('telepon')?.value.replace(/[^0-9]/g, '');
             if (telepon && (telepon.length < 10 || telepon.length > 13)) {
                 alert('❌ Nomor WhatsApp harus 10-13 digit!');
@@ -2392,35 +2386,21 @@ require_once 'includes/functions.php';
                 return;
             }
             
-            fetch('proses_order.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
+            // Simulasi proses order
+            setTimeout(() => {
                 hideLoading();
                 
-                if (data.success) {
-                    orderNumberSpan.textContent = data.order.orderNumber;
-                    successAlert.classList.add('show');
-                    closeModal();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    
-                    setTimeout(() => {
-                        successAlert.classList.remove('show');
-                        if (data.order.orderNumber) {
-                            window.location.href = 'metode_pembayaran.php?order=' + data.order.orderNumber;
-                        }
-                    }, 5000);
-                } else {
-                    alert('❌ Gagal: ' + (data.message || 'Terjadi kesalahan'));
-                }
-            })
-            .catch(error => {
-                hideLoading();
-                console.error('Error:', error);
-                alert('❌ Terjadi kesalahan jaringan. Silakan coba lagi.');
-            });
+                // Generate nomor order random
+                const orderNumber = 'ORD' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                orderNumberSpan.textContent = orderNumber;
+                successAlert.classList.add('show');
+                closeModal();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    successAlert.classList.remove('show');
+                }, 5000);
+            }, 2000);
         };
         
         // ==================== FILTER LAYANAN ====================
